@@ -1,20 +1,18 @@
 /**
  * Copyright (C) 2012 Uday Kodukula <ukodukula@gmail.com>
  *
- * This program is free software; you can redistribute it and/or modify it 
- * under the terms of the GNU General Public License as published by the Free 
- * Software Foundation; either version 2 of the License, or (at your option) 
- * any later version.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
- * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * 
- * See the GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License along 
- * with this program; if not, write to the Free Software Foundation, Inc., 
- * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>. 
  *
  */
 package com.ukodukula.ui;
@@ -24,6 +22,7 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -43,24 +42,27 @@ import com.ukodukula.util.Point;
 @SuppressWarnings("serial")
 public class Plotter extends JPanel {
 
+    private List<MeanPoint> data;
+    private KMeans km;
+
+    public void initKMeans(KMeans km) {
+	this.km = km;
+	this.stepKMeans();
+    }
+
+    public void stepKMeans() {
+	this.data = km.step();
+	if (!km.hasConverged()) {
+	    this.repaint();
+	}
+    }
+
     public void paintComponent(Graphics g) {
 	super.paintComponent(g);
 
 	Graphics2D g2d = (Graphics2D) g;
 
-	ArrayList<Point> points = new ArrayList<Point>();
-
-	for (int i = 0; i < 1000; i++) {
-	    double randX = (Math.random() * 1000) % 600;
-	    double randY = (Math.random() * 1000) % 600;
-	    points.add(new Point(randX, randY));
-	}
-
-	KMeans km = new KMeans(5, points);
-
-	List<MeanPoint> data = km.run();
-
-	for (MeanPoint meanPoint : data) {
+	for (MeanPoint meanPoint : this.data) {
 
 	    double maxDist = 0;
 
@@ -72,8 +74,6 @@ public class Plotter extends JPanel {
 		int x = (int) point.getX();
 		int y = (int) point.getY();
 		g2d.drawArc(x - 1, y - 1, 2, 2, 0, 360);
-		g2d.drawLine(x, y, (int) meanPoint.getX(),
-			(int) meanPoint.getY());
 	    }
 
 	    g2d.setColor(Color.red);
@@ -85,14 +85,32 @@ public class Plotter extends JPanel {
 	    g2d.drawArc(meanx - maxRad, meany - maxRad, (int) maxDist,
 		    (int) maxDist, 0, 360);
 	}
+
+	this.stepKMeans();
     }
 
     public static void main(String[] args) {
 	Plotter plot = new Plotter();
+
+	ArrayList<Point> points = new ArrayList<Point>();
+
+	Random rand = new Random();
+
+	for (int i = 0; i < 10000; i++) {
+	    double randX = (rand.nextGaussian() * 100 + 300) % 600;
+	    double randY = (rand.nextGaussian() * 100 + 300) % 600;
+	    points.add(new Point(randX, randY));
+	}
+
+	KMeans km = new KMeans(8, points);
+
+	plot.initKMeans(km);
+
 	JFrame frame = new JFrame("Uday's K-Means Fun!");
 	frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	frame.add(plot);
 	frame.setSize(600, 600);
+	frame.setResizable(false);
 	frame.setLocationRelativeTo(null);
 	frame.setVisible(true);
     }

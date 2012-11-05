@@ -1,20 +1,18 @@
 /**
  * Copyright (C) 2012 Uday Kodukula <ukodukula@gmail.com>
  *
- * This program is free software; you can redistribute it and/or modify it 
- * under the terms of the GNU General Public License as published by the Free 
- * Software Foundation; either version 2 of the License, or (at your option) 
- * any later version.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
- * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * 
- * See the GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License along 
- * with this program; if not, write to the Free Software Foundation, Inc., 
- * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>. 
  *
  */
 package com.ukodukula.util;
@@ -23,7 +21,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Description of what this class does.
+ * Core class that uses MeanPoints (centroids) and Points to implement the
+ * K-Means algorithm. It allows clients to step through each iteration and
+ * retrieve the latest state of the data and centroids.
  * 
  * @created Nov 4, 2012
  * @author ukodukula
@@ -33,6 +33,7 @@ public class KMeans {
 
     private List<Point> points;
     private List<MeanPoint> meanPoints;
+    private boolean converged = false;
 
     public KMeans(int k, List<Point> points) {
 
@@ -47,37 +48,31 @@ public class KMeans {
 	}
     }
 
-    public List<MeanPoint> run() {
+    public boolean hasConverged() {
+	return this.converged;
+    }
 
-	boolean converged = false;
-	// Keep running the algorithm until all points are comfortable with the
-	// cluster that they belong to. Convergence in this context means that
-	// the centroids of all clusters have not updated themselves, which
-	// means that points have not moved between clusters.
-	while (!converged) {
+    public List<MeanPoint> step() {
 
-	    tellPointsToFindMeans();
+	tellPointsToFindMeans();
 
-	    double preAggX = 0;
-	    double preAggY = 0;
-	    double postAggX = 0;
-	    double postAggY = 0;
+	double preAggX = 0;
+	double preAggY = 0;
+	double postAggX = 0;
+	double postAggY = 0;
 
-	    for (MeanPoint meanPoint : this.meanPoints) {
-		preAggX += meanPoint.getX();
-		preAggY += meanPoint.getY();
-	    }
-
-	    updateMeans();
-
-	    for (MeanPoint meanPoint : this.meanPoints) {
-		postAggX += meanPoint.getX();
-		postAggY += meanPoint.getY();
-	    }
-
-	    converged = (preAggX == postAggX) && (preAggY == postAggY);
+	for (MeanPoint meanPoint : this.meanPoints) {
+	    preAggX += meanPoint.getX();
+	    preAggY += meanPoint.getY();
 	}
 
+	updateMeans();
+
+	for (MeanPoint meanPoint : this.meanPoints) {
+	    postAggX += meanPoint.getX();
+	    postAggY += meanPoint.getY();
+	}
+	this.converged = (preAggX == postAggX) && (preAggY == postAggY);
 	return this.meanPoints;
     }
 

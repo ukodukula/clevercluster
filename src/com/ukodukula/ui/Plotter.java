@@ -17,6 +17,7 @@
  */
 package com.ukodukula.ui;
 
+import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -24,6 +25,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
@@ -47,7 +49,6 @@ public class Plotter extends JPanel {
 
     public void initKMeans(KMeans km) {
 	this.km = km;
-	this.stepKMeans();
     }
 
     public void stepKMeans() {
@@ -60,6 +61,7 @@ public class Plotter extends JPanel {
     public void paintComponent(Graphics g) {
 	super.paintComponent(g);
 
+	this.setBackground(Color.black);
 	Graphics2D g2d = (Graphics2D) g;
 
 	for (MeanPoint meanPoint : this.data) {
@@ -70,10 +72,10 @@ public class Plotter extends JPanel {
 		if (point.distance(meanPoint) > maxDist) {
 		    maxDist = point.distance(meanPoint);
 		}
-		g2d.setColor(Color.gray);
+		g2d.setColor(Color.white);
 		int x = (int) point.getX();
 		int y = (int) point.getY();
-		g2d.drawArc(x - 1, y - 1, 2, 2, 0, 360);
+		g2d.drawArc(x, y, 1, 1, 0, 360);
 	    }
 
 	    g2d.setColor(Color.red);
@@ -88,28 +90,46 @@ public class Plotter extends JPanel {
 
 	this.stepKMeans();
     }
-
-    public static void main(String[] args) {
-	Plotter plot = new Plotter();
-
+    
+    public ArrayList<Point> generateRandomPoints(){
 	ArrayList<Point> points = new ArrayList<Point>();
 
 	Random rand = new Random();
 
-	for (int i = 0; i < 10000; i++) {
-	    double randX = (rand.nextGaussian() * 100 + 300) % 600;
-	    double randY = (rand.nextGaussian() * 100 + 300) % 600;
-	    points.add(new Point(randX, randY));
+	for (int a = 1; a < 10; a++){
+	    for (int i = 0; i < 1000; i++) {
+		double randX = (rand.nextGaussian() * (8 * a) + (a * 100)) % 600;
+		double randY = (rand.nextGaussian() * (10 * a) + (a * 100)) % 600;
+		points.add(new Point(randX, randY));
+	    }	    
 	}
+	
+	return points;
+    }
 
-	KMeans km = new KMeans(8, points);
+    public static void main(String[] args) {
+	
+	JPanel controls = new JPanel();
+
+	JButton btn_k = new JButton("Restart");
+	
+	Plotter plot = new Plotter();
+	plot.setLayout(new BorderLayout());
+	
+	controls.add(btn_k);
+	
+	plot.add(controls,BorderLayout.SOUTH);
+
+	KMeans km = new KMeans(10, plot.generateRandomPoints());
 
 	plot.initKMeans(km);
+	plot.stepKMeans();
 
 	JFrame frame = new JFrame("Uday's K-Means Fun!");
+
 	frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	frame.add(plot);
-	frame.setSize(600, 600);
+	frame.setSize(600, 675);
 	frame.setResizable(false);
 	frame.setLocationRelativeTo(null);
 	frame.setVisible(true);

@@ -37,15 +37,23 @@ public class KMeans {
 
     public KMeans(int k, List<Point> points) {
 
+	getFreshMeans(k);
+	this.points = points;
+    }
+    
+    public void getFreshMeans(int k){
 	// Initialize K Random Points.
 	this.meanPoints = new ArrayList<MeanPoint>();
-	this.points = points;
 
 	for (int i = 0; i < k; i++) {
 	    double randX = Math.random();
 	    double randY = Math.random();
 	    this.meanPoints.add(new MeanPoint(randX, randY));
 	}
+	
+	// Since this is a fresh set of Means, they obviously haven't converged so reset
+	// from prior runs.
+	this.converged = false;
     }
 
     public boolean hasConverged() {

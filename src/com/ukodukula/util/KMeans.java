@@ -46,8 +46,8 @@ public class KMeans {
 	this.meanPoints = new ArrayList<MeanPoint>();
 
 	for (int i = 0; i < k; i++) {
-	    double randX = Math.random();
-	    double randY = Math.random();
+	    double randX = Math.random() * 600;
+	    double randY = Math.random() * 600;
 	    this.meanPoints.add(new MeanPoint(randX, randY));
 	}
 	
@@ -115,5 +115,9 @@ public class KMeans {
 	for (MeanPoint meanPoint : this.meanPoints) {
 	    meanPoint.update();
 	}
+    }
+    
+    public void setPoints(List<Point> points){
+	this.points = points;
     }
 }

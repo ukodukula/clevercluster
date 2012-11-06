@@ -21,6 +21,8 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -108,20 +110,39 @@ public class Plotter extends JPanel {
     }
 
     public static void main(String[] args) {
+
+	final Plotter plot = new Plotter();
+	final KMeans km = new KMeans(20, plot.generateRandomPoints());
+	
+	plot.setLayout(new BorderLayout());
 	
 	JPanel controls = new JPanel();
 
 	JButton btn_k = new JButton("Restart");
+	btn_k.addActionListener(new ActionListener()
+	{
+	  public void actionPerformed(ActionEvent e)
+	  {
+	      km.getFreshMeans(20);
+	      plot.stepKMeans();
+	  }
+	});
 	
-	Plotter plot = new Plotter();
-	plot.setLayout(new BorderLayout());
+	JButton btn_resetData = new JButton("New Data Points");
+	btn_resetData.addActionListener(new ActionListener()
+	{
+	  public void actionPerformed(ActionEvent e)
+	  {
+	      km.setPoints(plot.generateRandomPoints());
+	      km.getFreshMeans(20);
+	      plot.stepKMeans();
+	  }
+	});
 	
 	controls.add(btn_k);
+	controls.add(btn_resetData);
 	
 	plot.add(controls,BorderLayout.SOUTH);
-
-	KMeans km = new KMeans(10, plot.generateRandomPoints());
-
 	plot.initKMeans(km);
 	plot.stepKMeans();
 

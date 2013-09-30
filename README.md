@@ -1,4 +1,4 @@
-CleverCluster
+CleverCluster [![Build Status](https://travis-ci.org/ukodukula/clevercluster.png?branch=master)](https://travis-ci.org/ukodukula/clevercluster)
 =============
 
 The following is a collection of machine learning algorithms that I have implemented for instructional purposes. Please feel free to fork this repo and contribute!

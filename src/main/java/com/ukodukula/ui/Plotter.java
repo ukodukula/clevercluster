@@ -31,9 +31,9 @@ import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
-import com.ukodukula.util.KMeans;
-import com.ukodukula.util.MeanPoint;
-import com.ukodukula.util.Point;
+import com.ukodukula.clustering.kmeans.KMeans;
+import com.ukodukula.clustering.kmeans.MeanPoint;
+import com.ukodukula.clustering.kmeans.Point;
 
 /**
  * This class is a used to render a GUI that renders points and demonstrates the

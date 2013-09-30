@@ -15,13 +15,13 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>. 
  *
  */
-package com.ukodukula.util;
+package com.ukodukula.clustering.kmeans;
 
 import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
 
-import com.ukodukula.util.Point;
+import com.ukodukula.clustering.kmeans.Point;
 
 /**
  * This class is a unit test that ensures that desired behavior for a Point.

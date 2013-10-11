@@ -17,8 +17,10 @@
  */
 package com.ukodukula.clustering.kmeans;
 
+import java.awt.Color;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 /**
  * A MeanPoint class is an extension of the traditional Point class. It is used
@@ -37,22 +39,31 @@ import java.util.List;
 public class MeanPoint extends Point {
 
     private List<Point> neighbors;
-
+    private Color color;
+    
     public MeanPoint(double x, double y) {
-	super(x, y);
-	this.neighbors = new ArrayList<Point>();
+    	super(x, y);
+
+    	Random rand = new Random();
+    	
+    	float r = rand.nextFloat();
+    	float g = rand.nextFloat();
+    	float b = rand.nextFloat();
+
+    	this.color = new Color(r,g,b);
+    	this.neighbors = new ArrayList<Point>();
     }
 
     public void addNeighbor(Point neighbor) {
-	this.neighbors.add(neighbor);
+    	this.neighbors.add(neighbor);
     }
 
     public void removeNeighbor(Point neighbor) {
-	this.neighbors.remove(neighbor);
+    	this.neighbors.remove(neighbor);
     }
 
     public List<Point> getNeighbors() {
-	return this.neighbors;
+    	return this.neighbors;
     }
 
     public void update() {
@@ -71,5 +82,9 @@ public class MeanPoint extends Point {
 
 	this.setX(x / neighbors.size());
 	this.setY(y / neighbors.size());
+    }
+        
+    public Color getColor(){
+    	return this.color;
     }
 }

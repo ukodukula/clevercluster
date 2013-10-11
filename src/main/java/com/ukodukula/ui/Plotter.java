@@ -63,7 +63,7 @@ public class Plotter extends JPanel {
     public void paintComponent(Graphics g) {
 	super.paintComponent(g);
 
-	this.setBackground(Color.black);
+	this.setBackground(Color.WHITE);
 	Graphics2D g2d = (Graphics2D) g;
 
 	for (MeanPoint meanPoint : this.data) {
@@ -74,18 +74,18 @@ public class Plotter extends JPanel {
 		if (point.distance(meanPoint) > maxDist) {
 		    maxDist = point.distance(meanPoint);
 		}
-		g2d.setColor(Color.white);
+		g2d.setColor(meanPoint.getColor());
 		int x = (int) point.getX();
 		int y = (int) point.getY();
-		g2d.drawArc(x, y, 1, 1, 0, 360);
+		g2d.drawArc(x, y, 2, 2, 0, 360);
 	    }
 
-	    g2d.setColor(Color.red);
+	    g2d.setColor(meanPoint.getColor());
 	    int meanx = (int) meanPoint.getX();
 	    int meany = (int) meanPoint.getY();
 	    int maxRad = (int) maxDist / 2;
 
-	    g2d.drawArc(meanx - 1, meany - 1, 2, 2, 0, 360);
+	    g2d.drawArc(meanx - 1, meany - 1, 4, 4, 0, 360);
 	    g2d.drawArc(meanx - maxRad, meany - maxRad, (int) maxDist,
 		    (int) maxDist, 0, 360);
 	}
